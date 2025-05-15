@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetalWorks - Daily Metal Prices</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-panel {
+            display: none;
+        }
+        .blur-effect {
+            filter: blur(2px);
+            pointer-events: none;
+        }
+        .price-up {
+            color: #10B981;
+        }
+        .price-down {
+            color: #EF4444;
+        }
+        .price-neutral {
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="main-content">
+        <!-- Header -->
+        <header class="bg-gray-800 text-white py-4">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-xl font-bold">MetalWorks</h1>
+                        <p class="text-gray-300 text-sm">Daily Metal Prices (₹/kg)</p>
+                    </div>
+                    <div>
+                        <button id="admin-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                            <i class="fas fa-lock mr-1"></i>Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6">
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metal</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Iron Row -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-5 w-5 text-gray-400">
+                                        <i class="fas fa-magnet"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Iron</div>
+                                        <div class="text-sm text-gray-500">Industrial grade</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 font-medium" id="iron-price">₹0.00</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm" id="iron-change">
+                                    <span class="price-neutral"><i class="fas fa-equals mr-1"></i>No change</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="iron-updated">-</td>
+                        </tr>
+                        
+                        <!-- Copper Row -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-5 w-5 text-orange-500">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Copper</div>
+                                        <div class="text-sm text-gray-500">High conductivity</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 font-medium" id="copper-price">₹0.00</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm" id="copper-change">
+                                    <span class="price-neutral"><i class="fas fa-equals mr-1"></i>No change</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="copper-updated">-</td>
+                        </tr>
+                        
+                        <!-- Brass Row -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-5 w-5 text-yellow-600">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Brass</div>
+                                        <div class="text-sm text-gray-500">Premium alloy</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 font-medium" id="brass-price">₹0.00</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm" id="brass-change">
+                                    <span class="price-neutral"><i class="fas fa-equals mr-1"></i>No change</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="brass-updated">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4 text-right text-xs text-gray-500">
+                <p id="last-updated">Last updated: Loading...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-4 mt-6">
+            <div class="container mx-auto px-4 text-center text-sm">
+                <p>© 2023 MetalWorks. Contact: 9876543210</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Admin Panel (Hidden by default) -->
+    <div id="admin-panel" class="admin-panel fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">Update Metal Prices</h2>
+            </div>
+            
+            <!-- Login Form (shown by default) -->
+            <div id="login-form" class="p-4">
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Admin Password</label>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Enter password">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button id="cancel-login" class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button id="login-btn" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">Login</button>
+                </div>
+            </div>
+            
+            <!-- Price Update Form (hidden until logged in) -->
+            <div id="price-update-form" class="hidden p-4">
+                <div class="space-y-3">
+                    <div>
+                        <label for="update-iron" class="block text-sm font-medium text-gray-700">Iron (₹/kg)</label>
+                        <input type="number" step="0.01" id="update-iron" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="update-copper" class="block text-sm font-medium text-gray-700">Copper (₹/kg)</label>
+                        <input type="number" step="0.01" id="update-copper" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="update-brass" class="block text-sm font-medium text-gray-700">Brass (₹/kg)</label>
+                        <input type="number" step="0.01" id="update-brass" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button id="logout-btn" class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800">Logout</button>
+                    <button id="update-prices" class="px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const adminBtn = document.getElementById('admin-btn');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginForm = document.getElementById('login-form');
+        const priceUpdateForm = document.getElementById('price-update-form');
+        const cancelLogin = document.getElementById('cancel-login');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const updatePricesBtn = document.getElementById('update-prices');
+        const mainContent = document.getElementById('main-content');
+        
+        // Price display elements
+        const ironPriceEl = document.getElementById('iron-price');
+        const copperPriceEl = document.getElementById('copper-price');
+        const brassPriceEl = document.getElementById('brass-price');
+        const ironChangeEl = document.getElementById('iron-change');
+        const copperChangeEl = document.getElementById('copper-change');
+        const brassChangeEl = document.getElementById('brass-change');
+        const lastUpdatedEl = document.getElementById('last-updated');
+        const ironUpdatedEl = document.getElementById('iron-updated');
+        const copperUpdatedEl = document.getElementById('copper-updated');
+        const brassUpdatedEl = document.getElementById('brass-updated');
+        
+        // Price input elements
+        const updateIron = document.getElementById('update-iron');
+        const updateCopper = document.getElementById('update-copper');
+        const updateBrass = document.getElementById('update-brass');
+        
+        // Admin password (in a real app, this would be server-side)
+        const ADMIN_PASSWORD = "metal123"; // Change this to your preferred password
+        
+        // Initialize prices from localStorage or set defaults
+        let prices = JSON.parse(localStorage.getItem('metalPrices')) || {
+            iron: { current: 45.50, previous: 45.50, updatedAt: new Date().toISOString() },
+            copper: { current: 650.75, previous: 650.75, updatedAt: new Date().toISOString() },
+            brass: { current: 320.25, previous: 320.25, updatedAt: new Date().toISOString() }
+        };
+        
+        // Initialize the page
+        function initPage() {
+            updatePriceDisplays();
+            updateLastUpdated();
+        }
+        
+        // Update price displays
+        function updatePriceDisplays() {
+            // Iron
+            ironPriceEl.textContent = `₹${prices.iron.current.toFixed(2)}`;
+            updateChangeDisplay(ironChangeEl, prices.iron.current, prices.iron.previous);
+            ironUpdatedEl.textContent = formatDate(prices.iron.updatedAt);
+            
+            // Copper
+            copperPriceEl.textContent = `₹${prices.copper.current.toFixed(2)}`;
+            updateChangeDisplay(copperChangeEl, prices.copper.current, prices.copper.previous);
+            copperUpdatedEl.textContent = formatDate(prices.copper.updatedAt);
+            
+            // Brass
+            brassPriceEl.textContent = `₹${prices.brass.current.toFixed(2)}`;
+            updateChangeDisplay(brassChangeEl, prices.brass.current, prices.brass.previous);
+            brassUpdatedEl.textContent = formatDate(prices.brass.updatedAt);
+        }
+        
+        // Format date for display
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + 
+                   date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Update change display with appropriate icon and color
+        function updateChangeDisplay(element, current, previous) {
+            const change = current - previous;
+            const absChange = Math.abs(change);
+            
+            if (change > 0) {
+                element.innerHTML = `<span class="price-up"><i class="fas fa-arrow-up mr-1"></i>₹${absChange.toFixed(2)}</span>`;
+            } else if (change < 0) {
+                element.innerHTML = `<span class="price-down"><i class="fas fa-arrow-down mr-1"></i>₹${absChange.toFixed(2)}</span>`;
+            } else {
+                element.innerHTML = `<span class="price-neutral"><i class="fas fa-equals mr-1"></i>No change</span>`;
+            }
+        }
+        
+        // Update last updated time
+        function updateLastUpdated() {
+            const dates = [
+                new Date(prices.iron.updatedAt),
+                new Date(prices.copper.updatedAt),
+                new Date(prices.brass.updatedAt)
+            ];
+            const latestDate = new Date(Math.max(...dates.map(date => date.getTime())));
+            
+            lastUpdatedEl.textContent = `Last updated: ${formatDate(latestDate.toISOString())}`;
+        }
+        
+        // Save prices to localStorage
+        function savePrices() {
+            localStorage.setItem('metalPrices', JSON.stringify(prices));
+        }
+        
+        // Event Listeners
+        adminBtn.addEventListener('click', () => {
+            adminPanel.style.display = 'flex';
+            mainContent.classList.add('blur-effect');
+        });
+        
+        cancelLogin.addEventListener('click', () => {
+            adminPanel.style.display = 'none';
+            mainContent.classList.remove('blur-effect');
+        });
+        
+        loginBtn.addEventListener('click', () => {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                // Show price update form
+                loginForm.classList.add('hidden');
+                priceUpdateForm.classList.remove('hidden');
+                
+                // Populate current prices in form
+                updateIron.value = prices.iron.current.toFixed(2);
+                updateCopper.value = prices.copper.current.toFixed(2);
+                updateBrass.value = prices.brass.current.toFixed(2);
+                
+                // Clear password field
+                passwordInput.value = '';
+            } else {
+                alert('Incorrect password!');
+                passwordInput.value = '';
+            }
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            // Hide admin panel
+            adminPanel.style.display = 'none';
+            mainContent.classList.remove('blur-effect');
+            
+            // Reset forms
+            loginForm.classList.remove('hidden');
+            priceUpdateForm.classList.add('hidden');
+        });
+        
+        updatePricesBtn.addEventListener('click', () => {
+            // Get new prices from form
+            const newIron = parseFloat(updateIron.value);
+            const newCopper = parseFloat(updateCopper.value);
+            const newBrass = parseFloat(updateBrass.value);
+            
+            // Validate inputs
+            if (isNaN(newIron) || isNaN(newCopper) || isNaN(newBrass)) {
+                alert('Please enter valid prices for all metals');
+                return;
+            }
+            
+            if (newIron <= 0 || newCopper <= 0 || newBrass <= 0) {
+                alert('Prices must be positive numbers');
+                return;
+            }
+            
+            // Update prices
+            const now = new Date().toISOString();
+            
+            // Update iron
+            prices.iron.previous = prices.iron.current;
+            prices.iron.current = newIron;
+            prices.iron.updatedAt = now;
+            
+            // Update copper
+            prices.copper.previous = prices.copper.current;
+            prices.copper.current = newCopper;
+            prices.copper.updatedAt = now;
+            
+            // Update brass
+            prices.brass.previous = prices.brass.current;
+            prices.brass.current = newBrass;
+            prices.brass.updatedAt = now;
+            
+            // Save and update display
+            savePrices();
+            updatePriceDisplays();
+            updateLastUpdated();
+            
+            // Hide admin panel
+            adminPanel.style.display = 'none';
+            mainContent.classList.remove('blur-effect');
+            
+            // Reset forms
+            loginForm.classList.remove('hidden');
+            priceUpdateForm.classList.add('hidden');
+            
+            alert('Prices updated successfully!');
+        });
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
